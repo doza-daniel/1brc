@@ -74,7 +74,11 @@ func (a *agg) print(out io.Writer) {
 }
 
 func mean(entry *result) float64 {
-	return round(entry.sum/entry.count, 10)
+	return roundup(roundup(entry.sum) / entry.count)
+}
+
+func roundup(x float64) float64 {
+	return math.Floor(x*10+0.5) / 10
 }
 
 func round(x, unit float64) float64 {
