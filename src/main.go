@@ -7,7 +7,6 @@ import (
 	"math"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -16,8 +15,8 @@ type result struct {
 }
 
 type agg struct {
-	m    map[string]*result
-	keys []string
+	m    map[[100]byte]*result
+	keys [][100]byte
 }
 
 func main() {
@@ -28,7 +27,7 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 
-	a := &agg{m: make(map[string]*result), keys: make([]string, 0)}
+	a := &agg{m: make(map[[100]byte]*result), keys: make([][100]byte, 0)}
 	for scanner.Scan() {
 		line := scanner.Text()
 		a.f(line)
@@ -39,7 +38,8 @@ func main() {
 
 func (a *agg) f(line string) {
 	i := strings.IndexRune(line, ';')
-	city := line[:i]
+	var city [100]byte
+	copy(city[:], line[:i])
 	temp := mustParseFloat64(line[i+1:])
 	curr, ok := a.m[city]
 	if !ok {
@@ -60,7 +60,9 @@ func (a *agg) f(line string) {
 }
 
 func (a *agg) print(out io.Writer) {
-	sort.Strings(a.keys)
+	sort.Slice(a.keys, func(i, j int) bool {
+		return string(a.keys[i][:]) < string(a.keys[j][:])
+	})
 
 	var sep string = ", "
 	fmt.Fprintf(out, "{")
