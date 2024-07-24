@@ -8,6 +8,8 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 type result struct {
@@ -71,8 +73,21 @@ func (a *agg) print(out io.Writer) {
 			sep = "}\n"
 		}
 		entry := a.m[key]
-		fmt.Fprintf(out, "%s=%.1f/%.1f/%.1f%s", key, entry.min, mean(entry), entry.max, sep)
+		fmt.Fprintf(out, "%s=%.1f/%.1f/%.1f%s", decodeName(key), entry.min, mean(entry), entry.max, sep)
 	}
+}
+
+func decodeName(bs [100]byte) string {
+	runes := make([]rune, 0, 100)
+	for i := 0; i < 100; {
+		r, w := utf8.DecodeRune(bs[i:])
+		if !unicode.IsGraphic(r) {
+			break
+		}
+		i += w
+		runes = append(runes, r)
+	}
+	return string(runes)
 }
 
 func mean(entry *result) float64 {

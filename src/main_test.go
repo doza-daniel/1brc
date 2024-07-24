@@ -4,6 +4,17 @@ import (
 	"testing"
 )
 
+func Test_decodeName(t *testing.T) {
+	expect := "picuíbaJhang CityTepicJayapuraRio BrancoToyamaFangtingSanandajDelhi CantonmentLinghaiShorāpurToy"
+
+	var buff [100]byte
+	copy(buff[:], expect[:])
+	got := decodeName(buff)
+	if got != expect {
+		t.Errorf("expected %+v (%d), got %+v (%d)", expect, len(expect), got, len(got))
+	}
+}
+
 func Test_mustParseFloat64(t *testing.T) {
 	tt := []struct {
 		in     string
