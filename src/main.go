@@ -86,9 +86,21 @@ func round(x, unit float64) float64 {
 }
 
 func mustParseFloat64(s string) float64 {
-	num, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		panic(err)
+	c := 0
+	var i int = 0
+	var negative bool
+	if s[i] == '-' {
+		negative = true
+		i++
 	}
-	return num
+	for s[i] != '.' {
+		c = c*10 + (int(s[i]) - '0')
+		i++
+	}
+	i++
+	c = c*10 + (int(s[i]) - '0')
+	if negative {
+		return -float64(c) / 10
+	}
+	return float64(c) / 10
 }

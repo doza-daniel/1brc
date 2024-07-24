@@ -4,7 +4,7 @@ SRC=src/main.go
 JAVA_SRC=src/main/java/dev/morling/onebrc/CalculateAverage_thomaswue.java
 
 ${BIN}: ${SRC}
-	go build -o $@ $<
+	@go build -o $@ $<
 
 ${JAVA_BIN}: ${JAVA_SRC}
 	./prepare_thomaswue.sh
